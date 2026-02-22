@@ -1,0 +1,7 @@
+import {
+  "tiye/genai" @genai,
+}
+
+options(
+  "is-main": true,
+)

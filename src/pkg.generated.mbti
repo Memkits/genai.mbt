@@ -1,0 +1,194 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "tiye/genai"
+
+// Values
+pub fn get_env(String) -> String
+
+pub fn parse_interaction(String) -> Interaction raise GenaiError
+
+pub fn promise_and_then(JSPromise[String], (String) -> JSPromise[Unit]) -> JSPromise[Unit]
+
+pub fn promise_seq(JSPromise[Unit], () -> JSPromise[Unit]) -> JSPromise[Unit]
+
+pub fn promise_unit() -> JSPromise[Unit]
+
+pub fn run_async(JSPromise[Unit]) -> Unit
+
+// Errors
+pub(all) suberror GenaiError {
+  ParseFailed(String)
+  MissingField(String)
+  InvalidFormat(String)
+}
+pub impl Show for GenaiError
+
+// Types and methods
+pub(all) struct Annotation {
+  source : String?
+  start_index : Int?
+  end_index : Int?
+}
+pub impl Show for Annotation
+
+pub(all) struct AudioContent {
+  data : String?
+  mime_type : String?
+  uri : String?
+}
+pub impl Show for AudioContent
+
+pub(all) enum Content {
+  Text(TextContent)
+  Image(ImageContent)
+  Audio(AudioContent)
+  FunctionCall(FunctionCallContent)
+  FunctionResult(FunctionResultContent)
+}
+pub impl Show for Content
+
+pub(all) struct CreateParams {
+  model : String
+  input : Input
+  previous_interaction_id : String?
+  generation_config : GenerationConfig?
+  tools : Array[Tool]?
+  response_modalities : Array[String]?
+  response_format : Json?
+  response_mime_type : String?
+  system_instruction : String?
+  store : Bool?
+}
+pub impl Show for CreateParams
+
+pub(all) struct FunctionCallContent {
+  id : String
+  name : String
+  arguments : Json
+}
+pub impl Show for FunctionCallContent
+
+pub(all) struct FunctionResultContent {
+  call_id : String
+  result : Json
+  name : String?
+  is_error : Bool?
+}
+pub impl Show for FunctionResultContent
+
+pub(all) struct FunctionTool {
+  name : String
+  description : String?
+  parameters : Json?
+}
+pub impl Show for FunctionTool
+
+pub(all) struct GenerationConfig {
+  max_output_tokens : Int?
+  temperature : Double?
+  top_p : Double?
+  seed : Int?
+  stop_sequences : Array[String]?
+  thinking_level : String?
+  thinking_summaries : String?
+  speech_config : Array[SpeechConfig]?
+}
+pub impl Show for GenerationConfig
+
+pub(all) struct GoogleGenAI {
+  // private fields
+}
+pub fn GoogleGenAI::interactions_cancel(Self, String) -> JSPromise[String]
+pub fn GoogleGenAI::interactions_create(Self, CreateParams) -> JSPromise[String]
+pub fn GoogleGenAI::interactions_delete(Self, String) -> JSPromise[Unit]
+pub fn GoogleGenAI::interactions_get(Self, String) -> JSPromise[String]
+pub fn GoogleGenAI::new(String) -> Self
+pub fn GoogleGenAI::new_with_base_url(String, String) -> Self
+
+pub(all) struct ImageContent {
+  data : String?
+  mime_type : String?
+  resolution : String?
+  uri : String?
+}
+pub impl Show for ImageContent
+
+pub(all) enum Input {
+  Plain(String)
+  Parts(Array[Content])
+  Turns(Array[Turn])
+}
+pub impl Show for Input
+
+pub(all) struct Interaction {
+  id : String
+  status : InteractionStatus
+  model : String?
+  outputs : Array[Content]?
+  previous_interaction_id : String?
+  role : String?
+  usage : Usage?
+  created : String?
+  updated : String?
+}
+pub impl Show for Interaction
+
+pub(all) enum InteractionStatus {
+  InProgress
+  RequiresAction
+  Completed
+  Failed
+  Cancelled
+  Incomplete
+}
+pub impl Eq for InteractionStatus
+pub impl Show for InteractionStatus
+
+#external
+pub(all) type JSGoogleGenAI
+
+#external
+pub(all) type JSPromise[A]
+
+pub(all) struct SpeechConfig {
+  voice : String?
+  language : String?
+}
+pub impl Show for SpeechConfig
+
+pub(all) struct TextContent {
+  text : String?
+  annotations : Array[Annotation]?
+}
+pub impl Show for TextContent
+
+pub(all) enum Tool {
+  Function(FunctionTool)
+  GoogleSearch
+  CodeExecution
+  URLContext
+}
+pub impl Show for Tool
+
+pub(all) struct Turn {
+  content : TurnContent?
+  role : String?
+}
+pub impl Show for Turn
+
+pub(all) enum TurnContent {
+  Plain(String)
+  Parts(Array[Content])
+}
+pub impl Show for TurnContent
+
+pub(all) struct Usage {
+  total_input_tokens : Int?
+  total_output_tokens : Int?
+  total_cached_tokens : Int?
+}
+pub impl Show for Usage
+
+// Type aliases
+
+// Traits
+
