@@ -4,6 +4,8 @@ package "tiye/genai"
 // Values
 pub fn get_env(String) -> String
 
+pub fn parse_event(String) -> InteractionEvent raise GenaiError
+
 pub fn parse_interaction(String) -> Interaction raise GenaiError
 
 pub fn promise_and_then(JSPromise[String], (String) -> JSPromise[Unit]) -> JSPromise[Unit]
@@ -37,12 +39,43 @@ pub(all) struct AudioContent {
 }
 pub impl Show for AudioContent
 
+pub(all) struct CodeExecutionCallContent {
+  id : String
+  arguments : Json
+}
+pub impl Show for CodeExecutionCallContent
+
+pub(all) struct CodeExecutionResultContent {
+  id : String
+  output : String
+}
+pub impl Show for CodeExecutionResultContent
+
+pub(all) struct ComputerUseTool {
+  environment : String?
+  excluded_predefined_functions : Array[String]?
+}
+pub impl Show for ComputerUseTool
+
 pub(all) enum Content {
   Text(TextContent)
   Image(ImageContent)
   Audio(AudioContent)
+  Document(DocumentContent)
+  Video(VideoContent)
+  Thought(ThoughtContent)
   FunctionCall(FunctionCallContent)
   FunctionResult(FunctionResultContent)
+  CodeExecutionCall(CodeExecutionCallContent)
+  CodeExecutionResult(CodeExecutionResultContent)
+  GoogleSearchCall(GoogleSearchCallContent)
+  GoogleSearchResult(GoogleSearchResultContent)
+  URLContextCall(URLContextCallContent)
+  URLContextResult(URLContextResultContent)
+  MCPServerToolCall(MCPServerToolCallContent)
+  MCPServerToolResult(MCPServerToolResultContent)
+  FileSearchCall(FileSearchCallContent)
+  FileSearchResult(FileSearchResultContent)
 }
 pub impl Show for Content
 
@@ -57,8 +90,36 @@ pub(all) struct CreateParams {
   response_mime_type : String?
   system_instruction : String?
   store : Bool?
+  background : Bool?
+  stream : Bool?
 }
 pub impl Show for CreateParams
+
+pub(all) struct DocumentContent {
+  data : String?
+  mime_type : String?
+  uri : String?
+}
+pub impl Show for DocumentContent
+
+pub(all) struct FileSearchCallContent {
+  id : String
+  arguments : Json
+}
+pub impl Show for FileSearchCallContent
+
+pub(all) struct FileSearchResultContent {
+  id : String
+  result : Json
+}
+pub impl Show for FileSearchResultContent
+
+pub(all) struct FileSearchTool {
+  file_search_store_names : Array[String]?
+  top_k : Int?
+  metadata_filter : String?
+}
+pub impl Show for FileSearchTool
 
 pub(all) struct FunctionCallContent {
   id : String
@@ -91,6 +152,8 @@ pub(all) struct GenerationConfig {
   thinking_level : String?
   thinking_summaries : String?
   speech_config : Array[SpeechConfig]?
+  image_config : ImageConfig?
+  tool_choice : Json?
 }
 pub impl Show for GenerationConfig
 
@@ -99,10 +162,29 @@ pub(all) struct GoogleGenAI {
 }
 pub fn GoogleGenAI::interactions_cancel(Self, String) -> JSPromise[String]
 pub fn GoogleGenAI::interactions_create(Self, CreateParams) -> JSPromise[String]
+pub fn GoogleGenAI::interactions_create_stream(Self, CreateParams, (String) -> Unit) -> JSPromise[Unit]
 pub fn GoogleGenAI::interactions_delete(Self, String) -> JSPromise[Unit]
 pub fn GoogleGenAI::interactions_get(Self, String) -> JSPromise[String]
 pub fn GoogleGenAI::new(String) -> Self
 pub fn GoogleGenAI::new_with_base_url(String, String) -> Self
+
+pub(all) struct GoogleSearchCallContent {
+  id : String
+  arguments : Json
+}
+pub impl Show for GoogleSearchCallContent
+
+pub(all) struct GoogleSearchResultContent {
+  id : String
+  result : Json
+}
+pub impl Show for GoogleSearchResultContent
+
+pub(all) struct ImageConfig {
+  aspect_ratio : String?
+  image_size : String?
+}
+pub impl Show for ImageConfig
 
 pub(all) struct ImageContent {
   data : String?
@@ -129,8 +211,21 @@ pub(all) struct Interaction {
   usage : Usage?
   created : String?
   updated : String?
+  agent : String?
 }
 pub impl Show for Interaction
+
+pub(all) enum InteractionEvent {
+  InteractionStart(Json)
+  StatusUpdate(String)
+  ContentStart(Int, String)
+  ContentDelta(Int, Json)
+  ContentStop(Int)
+  InteractionComplete(Json)
+  Error(Json)
+  Unknown(String, Json)
+}
+pub impl Show for InteractionEvent
 
 pub(all) enum InteractionStatus {
   InProgress
@@ -149,9 +244,31 @@ pub(all) type JSGoogleGenAI
 #external
 pub(all) type JSPromise[A]
 
+pub(all) struct MCPServerTool {
+  url : String?
+  name : String?
+  headers : Json?
+  allowed_tools : Json?
+}
+pub impl Show for MCPServerTool
+
+pub(all) struct MCPServerToolCallContent {
+  id : String
+  name : String
+  arguments : Json
+}
+pub impl Show for MCPServerToolCallContent
+
+pub(all) struct MCPServerToolResultContent {
+  id : String
+  result : Json
+}
+pub impl Show for MCPServerToolResultContent
+
 pub(all) struct SpeechConfig {
   voice : String?
   language : String?
+  speaker : String?
 }
 pub impl Show for SpeechConfig
 
@@ -161,11 +278,20 @@ pub(all) struct TextContent {
 }
 pub impl Show for TextContent
 
+pub(all) struct ThoughtContent {
+  signature : String?
+  summary : Json?
+}
+pub impl Show for ThoughtContent
+
 pub(all) enum Tool {
   Function(FunctionTool)
   GoogleSearch
   CodeExecution
   URLContext
+  ComputerUse(ComputerUseTool)
+  MCPServer(MCPServerTool)
+  FileSearch(FileSearchTool)
 }
 pub impl Show for Tool
 
@@ -181,12 +307,32 @@ pub(all) enum TurnContent {
 }
 pub impl Show for TurnContent
 
+pub(all) struct URLContextCallContent {
+  id : String
+  arguments : Json
+}
+pub impl Show for URLContextCallContent
+
+pub(all) struct URLContextResultContent {
+  id : String
+  result : Json
+}
+pub impl Show for URLContextResultContent
+
 pub(all) struct Usage {
   total_input_tokens : Int?
   total_output_tokens : Int?
   total_cached_tokens : Int?
 }
 pub impl Show for Usage
+
+pub(all) struct VideoContent {
+  data : String?
+  mime_type : String?
+  resolution : String?
+  uri : String?
+}
+pub impl Show for VideoContent
 
 // Type aliases
 
