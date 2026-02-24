@@ -50,80 +50,80 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 
 ### `CreateParams` field coverage
 
-| Field                     | Type                | Status     | Notes                                                        |
-| ------------------------- | ------------------- | ---------- | ------------------------------------------------------------ |
-| `model`                   | `String`            | ✅ done    |                                                              |
-| `input`                   | `Input`             | ✅ done    | `Plain` / `Parts` / `Turns` variants                         |
-| `previous_interaction_id` | `String?`           | ✅ done    |                                                              |
-| `store`                   | `Bool?`             | ✅ done    |                                                              |
-| `system_instruction`      | `String?`           | ✅ done    |                                                              |
-| `generation_config`       | `GenerationConfig?` | ✅ done    | see below                                                    |
-| `tools`                   | `Array[Tool]?`      | ✅ done    | `Function` / `GoogleSearch` / `CodeExecution` / `URLContext` / `ComputerUse` / `MCPServer` / `FileSearch` |
-| `response_modalities`     | `Array[String]?`    | ✅ done    | `"text"` / `"image"` / `"audio"`                             |
-| `response_format`         | `Json?`             | ✅ done    | pass a JSON Schema                                           |
-| `response_mime_type`      | `String?`           | ✅ done    |                                                              |
-| `background`              | `Bool?`             | ✅ done    | For async long-running interactions + `cancel` (**untested**) |
-| `stream`                  | `Bool?`             | ✅ done    | Prefer `interactions_create_stream` instead                   |
+| Field                     | Type                | Status  | Notes                                                                                                     |
+| ------------------------- | ------------------- | ------- | --------------------------------------------------------------------------------------------------------- |
+| `model`                   | `String`            | ✅ done |                                                                                                           |
+| `input`                   | `Input`             | ✅ done | `Plain` / `Parts` / `Turns` variants                                                                      |
+| `previous_interaction_id` | `String?`           | ✅ done |                                                                                                           |
+| `store`                   | `Bool?`             | ✅ done |                                                                                                           |
+| `system_instruction`      | `String?`           | ✅ done |                                                                                                           |
+| `generation_config`       | `GenerationConfig?` | ✅ done | see below                                                                                                 |
+| `tools`                   | `Array[Tool]?`      | ✅ done | `Function` / `GoogleSearch` / `CodeExecution` / `URLContext` / `ComputerUse` / `MCPServer` / `FileSearch` |
+| `response_modalities`     | `Array[String]?`    | ✅ done | `"text"` / `"image"` / `"audio"`                                                                          |
+| `response_format`         | `Json?`             | ✅ done | pass a JSON Schema                                                                                        |
+| `response_mime_type`      | `String?`           | ✅ done |                                                                                                           |
+| `background`              | `Bool?`             | ✅ done | For async long-running interactions + `cancel` (**untested**)                                             |
+| `stream`                  | `Bool?`             | ✅ done | Prefer `interactions_create_stream` instead                                                               |
 
 ### `GenerationConfig` field coverage
 
-| Field                | Type                   | Status     |
-| -------------------- | ---------------------- | ---------- | ---------------------------------- |
-| `max_output_tokens`  | `Int?`                 | ✅ done    |
-| `temperature`        | `Double?`              | ✅ done    |
-| `top_p`              | `Double?`              | ✅ done    |
-| `seed`               | `Int?`                 | ✅ done    |
-| `stop_sequences`     | `Array[String]?`       | ✅ done    |
-| `thinking_level`     | `String?`              | ✅ done    |
-| `thinking_summaries` | `String?`              | ✅ done    |
-| `speech_config`      | `Array[SpeechConfig]?` | ✅ done    |                                              |
-| `image_config`       | `ImageConfig?`         | ✅ done    | `aspect_ratio`, `image_size` (**untested**)  |
-| `tool_choice`        | `Json?`                | ✅ done    | Free-form JSON for `mode` etc. (**untested**)|
+| Field                | Type                   | Status  |
+| -------------------- | ---------------------- | ------- | --------------------------------------------- |
+| `max_output_tokens`  | `Int?`                 | ✅ done |
+| `temperature`        | `Double?`              | ✅ done |
+| `top_p`              | `Double?`              | ✅ done |
+| `seed`               | `Int?`                 | ✅ done |
+| `stop_sequences`     | `Array[String]?`       | ✅ done |
+| `thinking_level`     | `String?`              | ✅ done |
+| `thinking_summaries` | `String?`              | ✅ done |
+| `speech_config`      | `Array[SpeechConfig]?` | ✅ done |                                               |
+| `image_config`       | `ImageConfig?`         | ✅ done | `aspect_ratio`, `image_size` (**untested**)   |
+| `tool_choice`        | `Json?`                | ✅ done | Free-form JSON for `mode` etc. (**untested**) |
 
 ### `Interaction` (response) field coverage
 
-| Field                     | Type                | Status     | Notes                                |
-| ------------------------- | ------------------- | ---------- | ------------------------------------ |
-| `id`                      | `String`            | ✅ done    |                                      |
-| `status`                  | `InteractionStatus` | ✅ done    |                                      |
-| `model`                   | `String?`           | ✅ done    |                                      |
-| `outputs`                 | `Array[Content]?`   | ✅ done    |                                      |
-| `previous_interaction_id` | `String?`           | ✅ done    |                                      |
-| `role`                    | `String?`           | ✅ done    |                                      |
-| `usage`                   | `Usage?`            | ✅ done    |                                      |
-| `created`                 | `String?`           | ✅ done    | ISO 8601                             |
-| `updated`                 | `String?`           | ✅ done    | ISO 8601                             |
-| `agent`                   | `String?`           | ✅ done    | Agent name (e.g. deep-research) (**untested**) |
+| Field                     | Type                | Status  | Notes                                          |
+| ------------------------- | ------------------- | ------- | ---------------------------------------------- |
+| `id`                      | `String`            | ✅ done |                                                |
+| `status`                  | `InteractionStatus` | ✅ done |                                                |
+| `model`                   | `String?`           | ✅ done |                                                |
+| `outputs`                 | `Array[Content]?`   | ✅ done |                                                |
+| `previous_interaction_id` | `String?`           | ✅ done |                                                |
+| `role`                    | `String?`           | ✅ done |                                                |
+| `usage`                   | `Usage?`            | ✅ done |                                                |
+| `created`                 | `String?`           | ✅ done | ISO 8601                                       |
+| `updated`                 | `String?`           | ✅ done | ISO 8601                                       |
+| `agent`                   | `String?`           | ✅ done | Agent name (e.g. deep-research) (**untested**) |
 
 ### Content block coverage
 
-| Variant                | Encode | Decode | Notes                         |
-| ---------------------- | ------ | ------ | ----------------------------- |
-| `Text`                 | ✅     | ✅     | includes `annotations`        |
-| `Image`                | ✅     | ✅     | base64 `data` or `uri`        |
-| `Audio`                | ✅     | ✅     | base64 `data` or `uri`        |
-| `Document`             | ✅     | ✅     | **untested** — PDF/doc input  |
-| `Video`                | ✅     | ✅     | **untested** — video input    |
-| `Thought`              | ✅     | ✅     | signature + summary           |
-| `FunctionCall`         | ✅     | ✅     |                               |
-| `FunctionResult`       | ✅     | ✅     |                               |
-| `CodeExecutionCall`    | ✅     | ✅     | **untested**                  |
-| `CodeExecutionResult`  | ✅     | ✅     | **untested**                  |
-| `GoogleSearchCall`     | ✅     | ✅     | **untested**                  |
-| `GoogleSearchResult`   | ✅     | ✅     | **untested**                  |
-| `URLContextCall`       | ✅     | ✅     | **untested**                  |
-| `URLContextResult`     | ✅     | ✅     | **untested**                  |
-| `MCPServerToolCall`    | ✅     | ✅     | **untested**                  |
-| `MCPServerToolResult`  | ✅     | ✅     | **untested**                  |
-| `FileSearchCall`       | ✅     | ✅     | **untested**                  |
-| `FileSearchResult`     | ✅     | ✅     | **untested**                  |
+| Variant               | Encode | Decode | Notes                        |
+| --------------------- | ------ | ------ | ---------------------------- |
+| `Text`                | ✅     | ✅     | includes `annotations`       |
+| `Image`               | ✅     | ✅     | base64 `data` or `uri`       |
+| `Audio`               | ✅     | ✅     | base64 `data` or `uri`       |
+| `Document`            | ✅     | ✅     | **untested** — PDF/doc input |
+| `Video`               | ✅     | ✅     | **untested** — video input   |
+| `Thought`             | ✅     | ✅     | signature + summary          |
+| `FunctionCall`        | ✅     | ✅     |                              |
+| `FunctionResult`      | ✅     | ✅     |                              |
+| `CodeExecutionCall`   | ✅     | ✅     | **untested**                 |
+| `CodeExecutionResult` | ✅     | ✅     | **untested**                 |
+| `GoogleSearchCall`    | ✅     | ✅     | **untested**                 |
+| `GoogleSearchResult`  | ✅     | ✅     | **untested**                 |
+| `URLContextCall`      | ✅     | ✅     | **untested**                 |
+| `URLContextResult`    | ✅     | ✅     | **untested**                 |
+| `MCPServerToolCall`   | ✅     | ✅     | **untested**                 |
+| `MCPServerToolResult` | ✅     | ✅     | **untested**                 |
+| `FileSearchCall`      | ✅     | ✅     | **untested**                 |
+| `FileSearchResult`    | ✅     | ✅     | **untested**                 |
 
 ### Streaming support
 
-| Feature                                        | Status  | Notes                                       |
-| ---------------------------------------------- | ------- | ------------------------------------------- |
-| `interactions_create_stream(params, on_event)` | ✅ done | Callback-based SSE streaming                |
-| `parse_event(json_str)`                        | ✅ done | Decodes SSE JSON into `InteractionEvent`    |
+| Feature                                        | Status  | Notes                                                                           |
+| ---------------------------------------------- | ------- | ------------------------------------------------------------------------------- |
+| `interactions_create_stream(params, on_event)` | ✅ done | Callback-based SSE streaming                                                    |
+| `parse_event(json_str)`                        | ✅ done | Decodes SSE JSON into `InteractionEvent`                                        |
 | `InteractionEvent` enum                        | ✅ done | Start / StatusUpdate / ContentStart / Delta / Stop / Complete / Error / Unknown |
 
 ### Promise / async utilities
@@ -151,21 +151,21 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 
 ## Examples (`src/cmd/main/main.mbt`)
 
-| Example                            | Covered features                                | Status      |
-| ---------------------------------- | ----------------------------------------------- | ----------- |
-| Single-turn text                   | `Input::Plain`, basic create + parse            | ✅ verified |
-| Stateful multi-turn                | `previous_interaction_id`, `store`              | ✅ verified |
-| System instruction                 | `system_instruction`                            | ✅ verified |
-| Google Search tool                 | `Tool::GoogleSearch`, grounded responses        | ✅ verified |
-| Structured JSON output             | `response_format` / `response_mime_type`        | ✅ verified |
-| Thinking (extended)                | `thinking_level`, `Thought` content parsing     | ✅ verified |
-| Streaming                          | `interactions_create_stream`, `parse_event`     | ✅ verified |
-| `Input::Parts` (multimodal)        | `Image`, `Audio` content blocks                 | ❌ missing  |
-| `Input::Turns` (stateless history) | client-managed conversation                     | ❌ missing  |
-| Function calling                   | `Tool::Function`, `RequiresAction` flow         | ❌ missing  |
-| Background interaction             | `background: true` + `interactions_cancel`      | ❌ missing  |
-| `interactions_get`                 | retrieve by id                                  | ❌ missing  |
-| `interactions_delete`              | delete by id                                    | ❌ missing  |
+| Example                            | Covered features                            | Status      |
+| ---------------------------------- | ------------------------------------------- | ----------- |
+| Single-turn text                   | `Input::Plain`, basic create + parse        | ✅ verified |
+| Stateful multi-turn                | `previous_interaction_id`, `store`          | ✅ verified |
+| System instruction                 | `system_instruction`                        | ✅ verified |
+| Google Search tool                 | `Tool::GoogleSearch`, grounded responses    | ✅ verified |
+| Structured JSON output             | `response_format` / `response_mime_type`    | ✅ verified |
+| Thinking (extended)                | `thinking_level`, `Thought` content parsing | ✅ verified |
+| Streaming                          | `interactions_create_stream`, `parse_event` | ✅ verified |
+| `Input::Parts` (multimodal)        | `Image`, `Audio` content blocks             | ❌ missing  |
+| `Input::Turns` (stateless history) | client-managed conversation                 | ❌ missing  |
+| Function calling                   | `Tool::Function`, `RequiresAction` flow     | ❌ missing  |
+| Background interaction             | `background: true` + `interactions_cancel`  | ❌ missing  |
+| `interactions_get`                 | retrieve by id                              | ❌ missing  |
+| `interactions_delete`              | delete by id                                | ❌ missing  |
 
 ---
 
