@@ -38,14 +38,15 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 
 ### `interactions.*` methods
 
-| JS method                     | MoonBit method                   | Status             | Notes                                   |
-| ----------------------------- | -------------------------------- | ------------------ | --------------------------------------- |
-| `interactions.create(params)` | `ai.interactions_create(params)` | ✅ done            | null fields are stripped before sending |
-| `interactions.get(id)`        | `ai.interactions_get(id)`        | ✅ done            |                                         |
-| `interactions.cancel(id)`     | `ai.interactions_cancel(id)`     | ✅ done            |                                         |
-| `interactions.delete(id)`     | `ai.interactions_delete(id)`     | ✅ done            |                                         |
-| `interactions.list(...)`      | —                                | ❌ not implemented | Not yet in SDK stable surface           |
-| Tool-result submission        | —                                | ❌ not implemented | Required for `RequiresAction` flow      |
+| JS method                     | MoonBit method                              | Status             | Notes                                   |
+| ----------------------------- | ------------------------------------------- | ------------------ | --------------------------------------- |
+| `interactions.create(params)` | `ai.interactions_create(params)`            | ✅ done            | null fields are stripped before sending |
+| `interactions.create(stream)` | `ai.interactions_create_stream(params, cb)` | ✅ done            | SSE callback-based streaming            |
+| `interactions.get(id)`        | `ai.interactions_get(id)`                   | ✅ done            |                                         |
+| `interactions.cancel(id)`     | `ai.interactions_cancel(id)`                | ✅ done            |                                         |
+| `interactions.delete(id)`     | `ai.interactions_delete(id)`                | ✅ done            |                                         |
+| `interactions.list(...)`      | —                                           | ❌ not implemented | Not yet in SDK stable surface           |
+| Tool-result submission        | —                                           | ❌ not implemented | Required for `RequiresAction` flow      |
 
 ### `CreateParams` field coverage
 
@@ -57,11 +58,12 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 | `store`                   | `Bool?`             | ✅ done    |                                                              |
 | `system_instruction`      | `String?`           | ✅ done    |                                                              |
 | `generation_config`       | `GenerationConfig?` | ✅ done    | see below                                                    |
-| `tools`                   | `Array[Tool]?`      | ✅ done    | `Function` / `GoogleSearch` / `CodeExecution` / `URLContext` |
+| `tools`                   | `Array[Tool]?`      | ✅ done    | `Function` / `GoogleSearch` / `CodeExecution` / `URLContext` / `ComputerUse` / `MCPServer` / `FileSearch` |
 | `response_modalities`     | `Array[String]?`    | ✅ done    | `"text"` / `"image"` / `"audio"`                             |
 | `response_format`         | `Json?`             | ✅ done    | pass a JSON Schema                                           |
 | `response_mime_type`      | `String?`           | ✅ done    |                                                              |
-| `background`              | `Bool?`             | ❌ missing | Needed for async long-running interactions + `cancel`        |
+| `background`              | `Bool?`             | ✅ done    | For async long-running interactions + `cancel` (**untested**) |
+| `stream`                  | `Bool?`             | ✅ done    | Prefer `interactions_create_stream` instead                   |
 
 ### `GenerationConfig` field coverage
 
@@ -74,8 +76,9 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 | `stop_sequences`     | `Array[String]?`       | ✅ done    |
 | `thinking_level`     | `String?`              | ✅ done    |
 | `thinking_summaries` | `String?`              | ✅ done    |
-| `speech_config`      | `Array[SpeechConfig]?` | ✅ done    |
-| `tool_choice`        | `String?`              | ❌ missing | `"auto"` / `"none"` / `"required"` |
+| `speech_config`      | `Array[SpeechConfig]?` | ✅ done    |                                              |
+| `image_config`       | `ImageConfig?`         | ✅ done    | `aspect_ratio`, `image_size` (**untested**)  |
+| `tool_choice`        | `Json?`                | ✅ done    | Free-form JSON for `mode` etc. (**untested**)|
 
 ### `Interaction` (response) field coverage
 
@@ -90,17 +93,38 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 | `usage`                   | `Usage?`            | ✅ done    |                                      |
 | `created`                 | `String?`           | ✅ done    | ISO 8601                             |
 | `updated`                 | `String?`           | ✅ done    | ISO 8601                             |
-| `agent`                   | `String?`           | ❌ missing | Present in TS types, not yet decoded |
+| `agent`                   | `String?`           | ✅ done    | Agent name (e.g. deep-research) (**untested**) |
 
 ### Content block coverage
 
-| Variant          | Encode | Decode | Notes                  |
-| ---------------- | ------ | ------ | ---------------------- |
-| `Text`           | ✅     | ✅     | includes `annotations` |
-| `Image`          | ✅     | ✅     | base64 `data` or `uri` |
-| `Audio`          | ✅     | ✅     | base64 `data` or `uri` |
-| `FunctionCall`   | ✅     | ✅     |                        |
-| `FunctionResult` | ✅     | ✅     |                        |
+| Variant                | Encode | Decode | Notes                         |
+| ---------------------- | ------ | ------ | ----------------------------- |
+| `Text`                 | ✅     | ✅     | includes `annotations`        |
+| `Image`                | ✅     | ✅     | base64 `data` or `uri`        |
+| `Audio`                | ✅     | ✅     | base64 `data` or `uri`        |
+| `Document`             | ✅     | ✅     | **untested** — PDF/doc input  |
+| `Video`                | ✅     | ✅     | **untested** — video input    |
+| `Thought`              | ✅     | ✅     | signature + summary           |
+| `FunctionCall`         | ✅     | ✅     |                               |
+| `FunctionResult`       | ✅     | ✅     |                               |
+| `CodeExecutionCall`    | ✅     | ✅     | **untested**                  |
+| `CodeExecutionResult`  | ✅     | ✅     | **untested**                  |
+| `GoogleSearchCall`     | ✅     | ✅     | **untested**                  |
+| `GoogleSearchResult`   | ✅     | ✅     | **untested**                  |
+| `URLContextCall`       | ✅     | ✅     | **untested**                  |
+| `URLContextResult`     | ✅     | ✅     | **untested**                  |
+| `MCPServerToolCall`    | ✅     | ✅     | **untested**                  |
+| `MCPServerToolResult`  | ✅     | ✅     | **untested**                  |
+| `FileSearchCall`       | ✅     | ✅     | **untested**                  |
+| `FileSearchResult`     | ✅     | ✅     | **untested**                  |
+
+### Streaming support
+
+| Feature                                        | Status  | Notes                                       |
+| ---------------------------------------------- | ------- | ------------------------------------------- |
+| `interactions_create_stream(params, on_event)` | ✅ done | Callback-based SSE streaming                |
+| `parse_event(json_str)`                        | ✅ done | Decodes SSE JSON into `InteractionEvent`    |
+| `InteractionEvent` enum                        | ✅ done | Start / StatusUpdate / ContentStart / Delta / Stop / Complete / Error / Unknown |
 
 ### Promise / async utilities
 
@@ -132,27 +156,26 @@ If you need those surfaces, use the JS SDK directly or a different binding packa
 | Single-turn text                   | `Input::Plain`, basic create + parse            | ✅ verified |
 | Stateful multi-turn                | `previous_interaction_id`, `store`              | ✅ verified |
 | System instruction                 | `system_instruction`                            | ✅ verified |
+| Google Search tool                 | `Tool::GoogleSearch`, grounded responses        | ✅ verified |
+| Structured JSON output             | `response_format` / `response_mime_type`        | ✅ verified |
+| Thinking (extended)                | `thinking_level`, `Thought` content parsing     | ✅ verified |
+| Streaming                          | `interactions_create_stream`, `parse_event`     | ✅ verified |
 | `Input::Parts` (multimodal)        | `Image`, `Audio` content blocks                 | ❌ missing  |
 | `Input::Turns` (stateless history) | client-managed conversation                     | ❌ missing  |
 | Function calling                   | `Tool::Function`, `RequiresAction` flow         | ❌ missing  |
-| Built-in tools                     | `GoogleSearch` / `CodeExecution` / `URLContext` | ❌ missing  |
-| Structured output                  | `response_format` / `response_mime_type`        | ❌ missing  |
 | Background interaction             | `background: true` + `interactions_cancel`      | ❌ missing  |
 | `interactions_get`                 | retrieve by id                                  | ❌ missing  |
 | `interactions_delete`              | delete by id                                    | ❌ missing  |
-| `generation_config` fields         | temperature, thinking_level, etc.               | ❌ missing  |
 
 ---
 
 ## Known gaps (priority order for contributors)
 
-1. **`background` field in `CreateParams`** — required to exercise `interactions_cancel`; add `background : Bool?` to the struct and encoder.
-2. **`tool_choice` in `GenerationConfig`** — controls whether tools are invoked.
-3. **`agent` field in `Interaction` decoder** — present in TS types, silently dropped today.
-4. **`JSPromise` rejection binding** — add `promise_catch` FFI so MoonBit code can handle rejected promises in a typed way.
-5. **Function-call round-trip example** — `RequiresAction` → submit tool results → `Completed`.
-6. **Tests** — encode/decode round-trips for all content types; snapshot tests for `encode_create_params`.
-7. **`interactions.list`** — once the SDK stabilises a list endpoint.
+1. **`JSPromise` rejection binding** — add `promise_catch` FFI so MoonBit code can handle rejected promises in a typed way.
+2. **Function-call round-trip example** — `RequiresAction` → submit tool results → `Completed`.
+3. **Tests** — encode/decode round-trips for all content types; snapshot tests for `encode_create_params`.
+4. **`interactions.list`** — once the SDK stabilises a list endpoint.
+5. **Runtime verification** of untested features — `ComputerUse`, `MCPServer`, `FileSearch` tools; `Document`/`Video` content; `ImageConfig`; multi-speaker `SpeechConfig.speaker`; `background` interactions.
 
 ---
 
@@ -201,6 +224,8 @@ run_async(promise_and_then(
     response_mime_type: None,
     system_instruction: None,
     store: None,
+    background: None,
+    stream: None,
   }),
   fn(json) {
     let ia = parse_interaction(json) catch { e => { println(e); return promise_unit() } }
